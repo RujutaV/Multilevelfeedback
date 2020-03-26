@@ -1,12 +1,66 @@
 #include<stdio.h>
 
 #define N 10
-int count;
+int limit;
 typedef struct
 {
       int process_id, arrival_time, burst_time, priority;
       int q, ready;
-}process_structure process[10]; //made process queue global
+}process_structure process[N]; //made process queue global
+
+void ready(int y);
+
+void sort_by_qt(int y);
+
+void sort_by_bt(int y);
+
+int assignQueue(int t1);
+
+int main()
+{
+      int  index, temp_process, time, j, y; //made limit global
+      process_structure temp;
+      printf("Enter Total Number of Processes:\t");
+      scanf("%d", &limit);
+      //process_structure process[limit];
+      for(index = 0; index < limit; index++)
+      {
+            printf("\nProcess ID:\t");
+            scanf("%d", &process[index].process_id);
+            printf("Arrival Time:\t");
+            scanf("%d", &process[index].arrival_time);
+            printf("Burst Time:\t");
+            scanf("%d", &process[index].burst_time);
+            printf("Process Priority:\t");
+            scanf("%d", &process[index].priority);
+            //avoided the temp_process variable
+            process[index].q = assignQueue(process[index].priority);
+            process[index].ready = 0;
+      }
+      time = process[0].burst_time;
+      for(y = 0; y < limit; y++)
+      {
+            //ready function
+            ready(y);
+
+            //sort by qt func
+            sort_by_qt(y);
+
+            //sort by bt func
+            sort_by_bt(y);
+
+            printf("\nProcess[%d]:\tTime:\t%d To %d\n", process[y].process_id, time, time + process[y].burst_time);
+            time = time + process[y].burst_time;
+            for(index = y; index < limit; index++)
+            {
+                  if(process[index].ready == 1)
+                  {
+                        process[index].ready = 0;
+                  }
+            }
+      }
+      return 0;
+}
 
 int assignQueue(int t1)
 {
@@ -73,49 +127,4 @@ sort_by_bt(int y)
               }
         }
   }
-}
-int main()
-{
-      int  index, temp_process, time, j, y; //made limit global
-      process_structure temp;
-      printf("Enter Total Number of Processes:\t");
-      scanf("%d", &limit);
-      //process_structure process[limit];
-      for(index = 0; index < limit; index++)
-      {
-            printf("\nProcess ID:\t");
-            scanf("%d", &process[index].process_id);
-            printf("Arrival Time:\t");
-            scanf("%d", &process[index].arrival_time);
-            printf("Burst Time:\t");
-            scanf("%d", &process[index].burst_time);
-            printf("Process Priority:\t");
-            scanf("%d", &process[index].priority);
-            //avoided the temp_process variable
-            process[index].q = assignQueue(process[index].priority);
-            process[index].ready = 0;
-      }
-      time = process[0].burst_time;
-      for(y = 0; y < limit; y++)
-      {
-            //ready function
-            ready(y);
-
-            //sort by qt func
-            sort_by_qt(y);
-
-            //sort by bt func
-            sort_by_bt(y);
-
-            printf("\nProcess[%d]:\tTime:\t%d To %d\n", process[y].process_id, time, time + process[y].burst_time);
-            time = time + process[y].burst_time;
-            for(index = y; index < limit; index++)
-            {
-                  if(process[index].ready == 1)
-                  {
-                        process[index].ready = 0;
-                  }
-            }
-      }
-      return 0;
 }
